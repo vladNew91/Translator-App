@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { LayoutComponent } from './components';
 import { HomePage, FavoritesPage, HistoryPage } from './pages';
+import { LayoutComponent } from './components';
+import './index.css';
 
 export const App: React.FC = (): JSX.Element => {
   return (
