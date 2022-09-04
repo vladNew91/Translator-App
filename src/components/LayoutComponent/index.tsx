@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import AppBar from '@mui/material/AppBar';
+import { useSelector } from "react-redux";
+import { selectThemeData } from '../../modules';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import TranslateIcon from '@mui/icons-material/Translate';
 import { ButtonGroup, ThemeProvider } from '@mui/material';
-import { SwitcherComponent } from '../../components';
+import { SwitcherContainer } from '../../containers';
 import { darkTheme } from '../../themes';
 
 export interface LayoutComponentProps {
@@ -16,12 +18,15 @@ export interface LayoutComponentProps {
 
 export const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }: LayoutComponentProps): JSX.Element => {
     const navigate = useNavigate();
+
+    const lightTheme: boolean = useSelector(selectThemeData);
+
     const goToPage = useCallback((url: string) => navigate(url), [navigate]);
 
     return (
         <ThemeProvider theme={darkTheme}>
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static" enableColorOnDark>
+                <AppBar position="static" enableColorOnDark={lightTheme}>
                     <Toolbar>
                         <TranslateIcon sx={{ mr: 2 }} />
 
@@ -30,7 +35,7 @@ export const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }: La
                         </Typography>
 
                         <Box sx={{ ml: 3, flexGrow: 1 }}>
-                            <SwitcherComponent />
+                            <SwitcherContainer />
                         </Box>
 
                         <ButtonGroup color='inherit' variant="text" aria-label="text button group">
