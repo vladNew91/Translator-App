@@ -1,6 +1,6 @@
 # Translator App
 
-# [Demo](https://vladnew91-translatop-app.netlify.app)
+## [Demo](https://vladnew91-translatop-app.netlify.app)
 
 Conditions:
 1. The translation carried out when the user finishes typing the text, you can enter text in both fields.
@@ -12,32 +12,18 @@ Conditions:
 7. Viewing the history of translations (same storage requirements as for “Favorite Translations”).
 8. “Switch” button for swapping target language with source language.
 
-## List of technologies
+### List of technologies
 
-1. React baced on [Create React App](https://github.com/facebook/create-react-app), functional components.
-2. TypeScript.
-3. MUI.
-4. React-Redux.
-5. React-router v6.
+1. [React](https://reactjs.org/)
+2. [TypeScript](https://www.typescriptlang.org/docs/)
+3. [MUI](https://mui.com/)
+4. [React-Redux](https://react-redux.js.org/tutorials/quick-start)
+5. [React-Router V6](https://reactrouter.com/en/v6.3.0/getting-started/overview)
 
 ### Available Scripts
 
-In the project directory, you can run:
+Clone the repository, in the project directory, you can run:
 
-`yarn`\
-Install dependences.
-
-`yarn start`\
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-`yarn build`\
-Builds the app for production to the `build` folder.
-
-## Learn More
-
-[MUI](https://mui.com/)\
-[React documentation](https://reactjs.org/)\
-[TypeScript documentation](https://www.typescriptlang.org/docs/)\
-[React-Redux documentation](https://react-redux.js.org/tutorials/quick-start)\
-[React-router v6 documentation](https://reactrouter.com/en/v6.3.0/getting-started/overview)
+`yarn` - Install dependences.\
+`yarn start` - runs the app in the development mode.\
+`yarn build` - builds the app for production to the `build` folder.

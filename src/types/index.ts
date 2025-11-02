@@ -5,3 +5,11 @@ export interface History {
   from: string,
   to: string,
 }
+
+export interface TranslateData {
+  data: {
+    translations: {
+      translatedText: [string]
+    }
+  }
+}

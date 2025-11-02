@@ -1,23 +1,28 @@
-import { URL, X_RAPID_API_KEY, ADDITIONS } from "../consts";
+import { URL, X_RAPID_API_KEY } from "../consts";
+import { TranslateData } from "../types";
 
 interface TranslateRequestProps {
-  targetLang: string;
+  to: string;
   text?: string;
 }
 
-export const translateRequest = async ({targetLang, text}: TranslateRequestProps) => {
+export const translateRequest = async ({ to, text }: TranslateRequestProps) => {
   const options = {
     method: 'POST',
     headers: {
-      'content-type': 'application/json',
-      'X-RapidAPI-Key': X_RAPID_API_KEY,
-      'X-RapidAPI-Host': 'microsoft-translator-text.p.rapidapi.com'
+      'x-rapidapi-key': X_RAPID_API_KEY,
+      'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
+      'Content-Type': 'application/json'
     },
-    body: `[{"Text":"${text}"}]`,
+    body: JSON.stringify({
+      q: text,
+      target: to,
+      format: "text"
+    })
   };
 
-  const response = await fetch(`${URL}translate?to%5B0%5D=${targetLang}${ADDITIONS}`, options);
-  const result = await response.json();
+  const response = await fetch(URL, options);
+  const result = await response.json() as TranslateData;
 
-  return result;
+  return result.data.translations.translatedText[0];
 };

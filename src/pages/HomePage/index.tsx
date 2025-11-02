@@ -18,8 +18,8 @@ export const HomePage: React.FC = (): JSX.Element => {
   const [error, setError] = useState<boolean>(false);
   const [textDetectedLang, setTextDetectedLang] = useState<string | undefined>();
   const [translateDetectedLang, setTranslateDetectedLang] = useState<string | undefined>();
-  const [textLang, setTextLang] = useState<string>('en');
-  const [translateLang, setTranslateLang] = useState<string>('ru');
+  const [fromLanguage, setTextLang] = useState<string>('en');
+  const [toLanguage, setTranslateLang] = useState<string>('ru');
 
   let typingTimer: NodeJS.Timeout;
   const doneTypingInterval = 3000;
@@ -46,42 +46,42 @@ export const HomePage: React.FC = (): JSX.Element => {
       id: Date.now(),
       text: text,
       translate: translate,
-      from: textLang,
-      to: translateLang,
+      from: fromLanguage,
+      to: toLanguage,
     };
 
     favoriteStorage.favorites.push(newFavorite);
 
     localStorage.setItem("favorites", JSON.stringify(favoriteStorage));
-  }, [text, translate, textLang, translateLang]);
+  }, [text, translate, fromLanguage, toLanguage]);
 
-  const translateText = async () => {
+  const translateText = useCallback(async () => {
     setLoadingTranslate(state => !state);
 
-    await translateRequest({ targetLang: translateLang, text: text })
-      .then(result => {        
-        setTranslate(result[0].translations[0].text);
-        setTextDetectedLang(result[0].detectedLanguage.language);
-        addToHistory({ text: text, translate: result[0].translations[0].text, from: textLang, to: translateLang });
-      })
-      .catch(() => setError(true));
-
-    setLoadingTranslate(state => !state);
-  };
-
-  const translateTranslate = async () => {
-    setLoadingText(state => !state);
-
-    await translateRequest({ targetLang: textLang, text: translate })
+    await translateRequest({ to: toLanguage, text: text })
       .then(result => {
-        setText(result[0].translations[0].text);
-        setTranslateDetectedLang(result[0].detectedLanguage.language);
-        addToHistory({ text: translate, translate: result[0].translations[0].text, from: translateLang, to: textLang });
+        setTranslate(result);
+        setTextDetectedLang(fromLanguage);
+        addToHistory({ text: text, translate: result, from: fromLanguage, to: toLanguage });
+      })
+      .catch(() => setError(true));
+
+    setLoadingTranslate(state => !state);
+  }, [fromLanguage, text, toLanguage]);
+
+  const translateTranslate = useCallback(async () => {
+    setLoadingText(state => !state);
+
+    await translateRequest({ to: toLanguage, text: text })
+      .then(result => {
+        setText(result);
+        setTranslateDetectedLang(toLanguage);
+        addToHistory({ text: translate, translate: result, from: toLanguage, to: fromLanguage });
       })
       .catch(() => setError(true));
 
     setLoadingText(state => !state);
-  };
+  }, [fromLanguage, text, toLanguage, translate]);
 
 
   const keyUp = (func: () => void) => {
@@ -100,7 +100,7 @@ export const HomePage: React.FC = (): JSX.Element => {
     setTranslate(e.target.value);
   }, [setTranslate]);
 
-  const handleChangetextLang = (e: React.SyntheticEvent, newValue: string) => {
+  const handleChangefromLanguage = (e: React.SyntheticEvent, newValue: string) => {
     setTextLang(newValue);
   };
 
@@ -109,15 +109,15 @@ export const HomePage: React.FC = (): JSX.Element => {
   };
 
   const handleReverse = useCallback(() => {
-    const original = textLang;
-    const target = translateLang;
+    const original = fromLanguage;
+    const target = toLanguage;
 
     setTextLang(target);
     setTranslateLang(original);
-  }, [textLang, translateLang]);
+  }, [fromLanguage, toLanguage]);
 
-  const sameTextLanguages: boolean = textDetectedLang === textLang || !textDetectedLang;
-  const sameTranslateLanguages: boolean = translateDetectedLang === translateLang || !translateDetectedLang;
+  const sameTextLanguages: boolean = textDetectedLang === fromLanguage || !textDetectedLang;
+  const sameTranslateLanguages: boolean = translateDetectedLang === toLanguage || !translateDetectedLang;
 
   if (error) return <Alert severity="error">This is an error. Please, reload page!</Alert>;
 
@@ -138,9 +138,9 @@ export const HomePage: React.FC = (): JSX.Element => {
           loading={loadingText}
           sameLanguages={sameTextLanguages}
           translateDetectedLang={textDetectedLang}
-          lang={textLang}
+          lang={fromLanguage}
           handleChangeValue={handleChangeTextValue}
-          handleChangeLang={handleChangetextLang}
+          handleChangeLang={handleChangefromLanguage}
           onKeyUp={() => keyUp(translateText)}
           onKeyDown={keyDown}
         />
@@ -150,7 +150,7 @@ export const HomePage: React.FC = (): JSX.Element => {
           loading={loadingTranslate}
           sameLanguages={sameTranslateLanguages}
           translateDetectedLang={translateDetectedLang}
-          lang={translateLang}
+          lang={toLanguage}
           handleChangeValue={handleChangeTranslateValue}
           handleChangeLang={handleChangeTranslateLang}
           onKeyUp={() => keyUp(translateTranslate)}
